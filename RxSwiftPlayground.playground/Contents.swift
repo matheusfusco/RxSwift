@@ -215,4 +215,49 @@ example(of: "BehaviorSubject") {
     .subscribe {
       print(label: "2)", event: $0)
   }
+    .disposed(by: disposeBag)
+}
+
+example(of: "ReplaySubject") {
+  let disposeBag = DisposeBag()
+  
+  let subject = ReplaySubject<String>.create(bufferSize: 2)
+  
+  subject.onNext(useTheForce)
+  
+  subject
+    .subscribe {
+      print(label: "1)", event: $0)
+  }
+  .disposed(by: disposeBag)
+  
+  subject.onNext(theForceIsStrong)
+
+  subject
+    .subscribe {
+      print(label: "2)", event: $0)
+  }
+  .disposed(by: disposeBag)
+}
+
+
+example(of: "Variable") {
+  let disposeBag = DisposeBag()
+  
+  let variable = Variable(iAmYourFather)
+  
+  print(variable.value)
+  
+  variable.asObservable()
+    .subscribe {
+      print(label: "1)", event: $0)
+  }
+  .disposed(by: disposeBag)
+  
+  variable.value = mayThe4thBeWithYou
+
+  //não é possivel - erros não podem ser atribuidos a variables
+//  variable.value = MyError.anError
+//  variable.asObservable().onError(MyError.anError)
+//  variable.asObservable().onCompleted()
 }
